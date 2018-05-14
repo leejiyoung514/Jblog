@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+
+	<insert id="categoryInsert" parameterType="BlogVo">  
+	<selectKey keyProperty="cateNo" resultType="int" order="BEFORE">	
+		select seq_category_no.nextval from dual
+	</selectKey>
+       <![CDATA[  
+          INSERT INTO category
+          VALUES(#{cateNo}
+          		,#{id}
+          		,#{cateName}
+          		,#{description}
+          		,sysdate
+          		)
+       ]]>
+	</insert>
+	<select id="selectByCateList" parameterType="String" resultType="CategoryVo">
+		<![CDATA[
+            SELECT B.rnum, B.cateNo, B.cateName, B.postCount, B.description    
+            FROM(SELECT rownum as rnum, A.cateNo, A.cateName, A.postCount, A.description
+                 FROM(SELECT cateNo, cateName,
+                             (SELECT Count(postNo)
+                              FROM post
+                              WHERE category.cateNo = post.cateNo) postCount,
+                              description
+                      FROM category
+                      WHERE id = #{id}
+                      ORDER BY cateNo desc)A
+                )B
+		]]>
+	</select>
+	
+<!-- 	<select id="selectByCateList" parameterType="String" resultType="CategoryVo">
+		<![CDATA[
+			 SELECT cateNo, cateName,
+			 		(SELECT Count(postNo)
+        			 FROM post
+        			 WHERE category.cateNo = post.cateNo) postNo,
+         			description
+        	FROM category
+        	WHERE id = #{id}
+        	ORDER BY cateNo DESC 		
+		]]>
+	</select>
+	 -->
+	
+    <select id="selectCategory"  parameterType="int"  resultType="CategoryVo">
+       <![CDATA[
+	    SELECT cateNo, cateName, id,
+               (SELECT Count(postNo)
+                FROM Post
+                WHERE category.cateNo = Post.cateNo) postNo,
+                description,
+                regDate
+        FROM category
+        WHERE cateNo = #{cateNo}
+        ORDER BY cateNo DESC
+        ]]>
+	</select>
+	
+	<delete id="delete"  parameterType="int" > 
+        <![CDATA[ 
+        DELETE FROM category
+        WHERE cateNo=#{cateNo} 
+         ]]>
+	</delete>
+	
+	
+
+</mapper>
+
+

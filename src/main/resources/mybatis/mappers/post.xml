@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+
+    <insert id="insert" parameterType="PostVo">  
+       <![CDATA[  
+          INSERT INTO post
+          VALUES(seq_post_no.nextval, 
+                 #{cateNo}, 
+                 #{postTitle}, 
+                 #{postContent}, 
+                 sysdate
+                )
+          ]]>
+	</insert>
+	
+	<select id="getPost" parameterType="int" resultType="PostVo">
+       <![CDATA[
+	    SELECT B.cateNo, B.cateName, B.description, B.postNo, B.postTitle, B.postContent, B.regDate
+        FROM(SELECT rownum as rnum, A.cateNo, A.cateName, A.description, A.postNo, A.postTitle, A.postContent, A.regDate
+             FROM(SELECT c.cateNo, c.cateName, c.description, p.postNo, p.postTitle, p.postContent, p.regDate
+                  FROM category c, post p
+                  WHERE c.cateNo= p.cateNo
+                  AND p.postNo = #{postNo}
+                  ORDER BY regDate DESC)A
+             )B
+        ]]>
+	</select>
+	
+<!-- 	<select id="getPost" parameterType="int" resultType="PostVo">
+       <![CDATA[
+	    SELECT postNo, cateNo, postTitle, postContent, regDate
+	    FROM post
+	    WHERE postNo = #{postNo}
+	    ORDER BY regdate desc
+        ]]>
+	</select> -->
+	
+	<select id="getPostList" parameterType="int" resultType="PostVo">
+       <![CDATA[
+	    SELECT B.rnum, B.cateNo, B.cateName, B.description, B.postNo, B.postTitle, B.postContent, B.regDate
+        FROM(SELECT rownum as rnum, A.cateNo, A.cateName, A.description, A.postNo, A.postTitle, A.postContent, A.regDate
+             FROM(SELECT c.cateNo, c.cateName, c.description, p.postNo, p.postTitle, p.postContent, p.regDate
+                  FROM category c, post p
+                  WHERE c.cateNo= p.cateNo
+                  AND c.cateNo = #{cateNo}
+                  ORDER BY regDate DESC)A
+             )B
+        ]]>
+	</select>	
+	
+	<!-- <select id="getPostList" parameterType="int" resultType="PostVo">
+       <![CDATA[
+	    SELECT postNo, cateNo, postTitle, postContent, regDate
+	    FROM post
+	    WHERE cateNo = #{cateNo}
+	    ORDER BY regdate desc
+        ]]>
+	</select> -->
+
+
+</mapper>
+
+

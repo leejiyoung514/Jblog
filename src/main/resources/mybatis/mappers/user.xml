@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+	<insert id="insert" parameterType="UserVo">  
+       <![CDATA[  
+          INSERT INTO USERS
+          VALUES(SEQ_USERS_NO.NEXTVAL,
+                  #{id},
+                  #{userName},
+                  #{password},
+                  sysdate
+          )
+          ]]>
+	</insert>
+	 
+	<select id="idCheck" parameterType="String" resultType="String">    <!--던저준거 EmailVO -->
+       <![CDATA[  
+           SELECT ID 
+           FROM USERS
+           WHERE id = #{id}
+          ]]>
+	</select>
+	
+    <!-- selectUserByidPw -->
+	<select id="selectUserByidPw" parameterType="map"
+		resultType="UserVo">    <!--던저준거 EmailVO -->
+       <![CDATA[  
+           SELECT USERNO, ID, USERNAME
+           FROM USERS
+           WHERE id = #{id}
+           AND password = #{password}
+          ]]>
+	</select>
+
+
+</mapper>
